@@ -1,45 +1,68 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-//order of routes are matters
-//....
+const {adminauth , userauth}=require("./middlewares/auth");
+// handle auth middleware for all requests
+app.use("/admin" , adminauth);
 
-// This will only handele GET call to /user 
-app.get("/user", (req, res)=> {
-  
-    res.send({firstname:"Rajesh",Lastname:"Narwade"}); 
+app.get("/admin/getAllData", (req, res) => {
+    //logic of request is coming from an admin (authorizzation)  
+    res.send("got all data");
+ });
+
+
+ app.get("/admin/deleteUser", (req, res) => {  
+      //logic of request is coming from an admin (authorizzation) 
+    res.send("deleted a user");
 });
+app.get("/user", userauth, (req, res) => {
+    
+    res.send("user");
+ });
+ app.get("/user/login", (req, res) => {
+    
+    res.send("user login");
+ });
+ app.get("/user/data",userauth, (req, res) => {
+    
+    res.send("user data");
+ });
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+  });
 
 
- app.post("/user", (req, res)=> {
-    // saving data to the database
-   res.send('data susccessfully saved to the database');
- }); 
- app.delete("/user", (req, res)=> {
-    // delete data from the database
-   res.send('data susccessfully deleted from the database');
- });  
-
-
-//this will match all the http methods API calls to /test
-app.use("/test", (req, res)=> {
   
-    res.send('Hello from the server side... Test');
-});
+
+// app.use("/", (req, res,next) => {
+//     console.log("handleing");
+//     next();
+//  //res.send("response! 1");
+//    });
+
+// middleware
+// app.get("/user", (req, res,next) => {
+//      console.log("handleing the user  route 1");
+//      next();
+//   //res.send("response! 1");
+    
+// },
+
+//  (req, res, next) => {
+//   console.log("handleing the user  route 2");
+//   //res.send("response 2!");
+//   next();
+// },
+// (req, res,next) => {
+//     console.log("handleing the user  route 2");
+//    // res.send("response 3!");
+//     next();
+//   },
+//   (req, res,next) => {
+//     console.log("handleing the user  route 2");
+//    res.send("response 4!");
+//    // next();
+//   }
+// );
 
 
 
-// app.use("/login", (req, res)=> {
-  
-//     res.send('Hello from the server side... for login');
-// });
-// app.use("/dashboard", (req, res)=> {
-  
-//     res.send('Hello from the server side... for dashboard');
-// });
-// app.use("/", (req, res)=> {
-  
-//     res.send('Hello from the server side... for home ');
-// });
-app.listen(3000 ,()=> { 
-    console.log('Server is running on port 3000');
-});
